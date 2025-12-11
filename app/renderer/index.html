@@ -1,20 +1,149 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>CopilotDeskAI</title>
-  <style>
-    body {
-      background: #ffffff;
-      margin: 0;
-      padding: 20px;
-      font-family: Arial;
-      font-size: 32px;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CopilotDeskAI</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #111;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: #0d0d0d;
+            border-right: 1px solid #222;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+            color: #4ea3ff;
+        }
+
+        .sidebar button {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .sidebar button:hover {
+            background: #333;
+        }
+
+        /* Chat Area */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #121212;
+        }
+
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .input-bar {
+            border-top: 1px solid #333;
+            padding: 15px;
+            display: flex;
+            background: #0d0d0d;
+        }
+
+        .input-bar input {
+            flex: 1;
+            padding: 12px;
+            background: #1a1a1a;
+            color: white;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+
+        .input-bar button {
+            margin-left: 10px;
+            padding: 12px 20px;
+            background: #4ea3ff;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .input-bar button:hover {
+            background: #82c3ff;
+        }
+
+        /* Chat bubble */
+        .bubble {
+            background: #1e1e1e;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            max-width: 80%;
+        }
+
+        .user {
+            background: #4ea3ff;
+            color: #000;
+            margin-left: auto;
+        }
+    </style>
 </head>
 <body>
-  <h1>CopilotDeskAI е стартиран успешно!</h1>
-  <p>Тук ще бъде твоят интерфейс.</p>
+
+    <div class="sidebar">
+        <h2>CopilotDeskAI</h2>
+        <button>New Chat</button>
+        <button>Settings</button>
+        <button>About</button>
+    </div>
+
+    <div class="chat-container">
+        <div class="messages" id="messages">
+            <div class="bubble">Hello! How can I assist you today?</div>
+        </div>
+        <div class="input-bar">
+            <input id="userInput" placeholder="Ask CopilotDeskAI…" />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+<script>
+function sendMessage() {
+    const input = document.getElementById("userInput");
+    const msgBox = document.getElementById("messages");
+
+    if (input.value.trim() === "") return;
+
+    // Add user's bubble
+    const userBubble = document.createElement("div");
+    userBubble.className = "bubble user";
+    userBubble.textContent = input.value;
+    msgBox.appendChild(userBubble);
+
+    // Scroll to bottom
+    msgBox.scrollTop = msgBox.scrollHeight;
+
+    // Clear input
+    input.value = "";
+}
+</script>
+
 </body>
 </html>
