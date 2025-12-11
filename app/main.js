@@ -1,7 +1,7 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
-const path = require("path");
-const { exec } = require("child_process");
-const axios = require("axios");
+const { app, BrowserWindow, ipcMain, desktopCapturer } = require('electron');
+const path = require('path');
+const axios = require('axios');
+require('dotenv').config();
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -10,21 +10,15 @@ function createWindow() {
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
             nodeIntegration: false,
-            contextIsolation: true,
-        },
+            contextIsolation: true
+        }
     });
 
-    win.loadFile(path.join(__dirname, "renderer", "index.html"));
+    win.loadFile("index.html");
 }
 
 app.whenReady().then(() => {
-    // ▶ Пуска Python backend автоматично
-    exec("python ../backend/server.py", (error) => {
-        if (error) console.log("Python backend error:", error);
-    });
-
     createWindow();
-
     app.on("activate", () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
@@ -34,26 +28,50 @@ app.on("window-all-closed", () => {
     if (process.platform !== "darwin") app.quit();
 });
 
-// ▶ Свързване на Electron → Python backend
-ipcMain.handle("send-message", async (event, userMessage) => {
-    try {
-        const response = await axios.post("http://127.0.0.1:5000/chat", {
-            message: userMessage,
-        });
+// ---------------- SCREENSHOT HANDLER ----------------
 
-        return response.data.reply;
-    } catch (err) {
-        console.error("Backend error:", err.message);
-        return "⚠ Backend not running.";
-    }
+ipcMain.handle("capture-screen", async () => {
+    const sources = await desktopCapturer.getSources({ types: ["screen"] });
+
+    const screen = sources[0];
+
+    return screen.thumbnail.toPNG().toString("base64");
 });
 
-// ▶ Screenshot request (готово за бъдеща функция)
-ipcMain.handle("take-screenshot", async () => {
+// ---------------- GPT-4o VISION API ----------------
+
+ipcMain.handle("analyze-image", async (event, base64Image, userText) => {
+    const prompt = userText || "Help me understand this screenshot.";
+
     try {
-        const response = await axios.get("http://127.0.0.1:5000/screenshot");
-        return response.data.image;
+        const response = await axios.post(
+            "https://api.openai.com/v1/chat/completions",
+            {
+                model: "gpt-4o",
+                messages: [
+                    {
+                        role: "user",
+                        content: [
+                            { type: "text", text: prompt },
+                            {
+                                type: "image_url",
+                                image_url: `data:image/png;base64,${base64Image}`
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
+                }
+            }
+        );
+
+        return response.data.choices[0].message.content;
+
     } catch (err) {
-        return null;
+        return "Error: " + err.message;
     }
 });
