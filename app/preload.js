@@ -1,7 +1,6 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer } = require("electron");
 
-contextBridge.exposeInMainWorld("electronAPI", {
-    captureScreen: () => ipcRenderer.invoke("capture-screen"),
-    analyzeImage: (img) => ipcRenderer.invoke("analyze-image", img),
-    showPointer: (x,y) => ipcRenderer.invoke("show-pointer", x, y),
+contextBridge.exposeInMainWorld("api", {
+    sendMessage: (msg) => ipcRenderer.invoke("send-message", msg),
+    screenshot: () => ipcRenderer.invoke("take-screenshot")
 });
