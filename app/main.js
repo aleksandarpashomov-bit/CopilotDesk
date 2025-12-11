@@ -5,16 +5,16 @@ require('dotenv').config();
 
 function createWindow() {
     const win = new BrowserWindow({
-        width: 1200,
-        height: 800,
+        width: 1300,
+        height: 900,
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
-            nodeIntegration: false,
-            contextIsolation: true
+            contextIsolation: true,
+            nodeIntegration: false
         }
     });
 
-    win.loadFile("index.html");
+    win.loadFile(path.join(__dirname, "index.html"));
 }
 
 app.whenReady().then(() => {
@@ -28,22 +28,22 @@ app.on("window-all-closed", () => {
     if (process.platform !== "darwin") app.quit();
 });
 
-// ---------------- SCREENSHOT HANDLER ----------------
+
+// -------------------- SCREENSHOT CAPTURE --------------------
 
 ipcMain.handle("capture-screen", async () => {
     const sources = await desktopCapturer.getSources({ types: ["screen"] });
-
     const screen = sources[0];
-
     return screen.thumbnail.toPNG().toString("base64");
 });
 
-// ---------------- GPT-4o VISION API ----------------
 
-ipcMain.handle("analyze-image", async (event, base64Image, userText) => {
-    const prompt = userText || "Help me understand this screenshot.";
+// -------------------- GPT-4o VISION REQUEST --------------------
 
+ipcMain.handle("analyze-image", async (event, base64Image, userPrompt) => {
     try {
+        const promptText = userPrompt || "Explain what you see on the screen.";
+
         const response = await axios.post(
             "https://api.openai.com/v1/chat/completions",
             {
@@ -52,11 +52,8 @@ ipcMain.handle("analyze-image", async (event, base64Image, userText) => {
                     {
                         role: "user",
                         content: [
-                            { type: "text", text: prompt },
-                            {
-                                type: "image_url",
-                                image_url: `data:image/png;base64,${base64Image}`
-                            }
+                            { type: "text", text: promptText },
+                            { type: "image_url", image_url: `data:image/png;base64,${base64Image}` }
                         ]
                     }
                 ]
@@ -71,7 +68,7 @@ ipcMain.handle("analyze-image", async (event, base64Image, userText) => {
 
         return response.data.choices[0].message.content;
 
-    } catch (err) {
-        return "Error: " + err.message;
+    } catch (error) {
+        return "Error: " + error.message;
     }
 });
