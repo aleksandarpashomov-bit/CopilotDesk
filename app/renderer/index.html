@@ -5,91 +5,49 @@
     <title>CopilotDeskAI</title>
     <style>
         body {
-            background-color: #111;
+            background: #111;
             color: white;
             font-family: Arial, sans-serif;
-            margin: 0;
-            display: flex;
-        }
-        #sidebar {
-            width: 250px;
-            background: #000;
-            padding: 20px;
-            border-right: 1px solid #333;
-        }
-        #chat {
-            flex: 1;
             padding: 20px;
         }
-        #messages {
-            height: 600px;
-            overflow-y: auto;
-            margin-bottom: 10px;
+        #screenshotBtn {
+            padding: 12px 20px;
+            font-size: 18px;
+            background: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
         }
-        .msg {
+        #askInput {
+            width: 100%;
             padding: 10px;
-            margin: 8px 0;
+            margin-top: 15px;
             border-radius: 6px;
+            border: none;
+            font-size: 16px;
         }
-        .user {
-            background: #1e88e5;
-        }
-        .bot {
-            background: #333;
+        #output {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-size: 18px;
+            background: #222;
+            padding: 15px;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
 
-<div id="sidebar">
-    <h2>CopilotDeskAI</h2>
-    <button onclick="newChat()">New Chat</button><br><br>
-    <button onclick="takeScreenshot()">Screenshot</button>
-</div>
+<h1>CopilotDeskAI Assistant</h1>
 
-<div id="chat">
-    <div id="messages"></div>
+<button id="screenshotBtn">📸 Screenshot & Analyze</button>
 
-    <input id="input" placeholder="Ask something..." style="width:80%; padding:10px;">
-    <button onclick="send()">Send</button>
-</div>
+<input id="askInput" placeholder="Ask something about your screen..." />
 
-<script>
-    async function send() {
-        const input = document.getElementById("input");
-        if (!input.value) return;
+<div id="output">Ready.</div>
 
-        addMessage(input.value, "user");
-
-        const reply = await window.api.sendMessage(input.value);
-        addMessage(reply, "bot");
-
-        input.value = "";
-    }
-
-    function addMessage(text, type) {
-        const box = document.getElementById("messages");
-        const div = document.createElement("div");
-        div.className = "msg " + type;
-        div.innerText = text;
-        box.appendChild(div);
-        box.scrollTop = box.scrollHeight;
-    }
-
-    async function takeScreenshot() {
-        addMessage("Taking screenshot…", "bot");
-        const result = await window.api.screenshot();
-
-        if (result)
-            addMessage("📸 Screenshot captured!", "bot");
-        else
-            addMessage("⚠ Unable to get screenshot.", "bot");
-    }
-
-    function newChat() {
-        document.getElementById("messages").innerHTML = "";
-    }
-</script>
+<script src="renderer.js"></script>
 
 </body>
 </html>
