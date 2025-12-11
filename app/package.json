@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
-    "dist": "electron-builder --win --x64"
+    "dist": "electron-builder"
   },
   "build": {
     "appId": "com.copilotdesk.ai",
@@ -14,20 +14,9 @@
     "directories": {
       "output": "dist"
     },
-    "files": [
-      "main.js",
-      "preload.js",
-      "renderer/**/*",
-      "assets/**/*",
-      "package.json"
-    ],
     "win": {
       "target": "nsis",
-      "icon": "assets/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "icon": "icon.ico"
     }
   },
   "dependencies": {
