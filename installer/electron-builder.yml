@@ -1,0 +1,19 @@
+
+appId: com.copilotdesk.ai
+productName: CopilotDeskAI
+directories:
+  output: dist
+files:
+  - "../app/**/*"
+extraResources:
+  - from: "../dist_backend/backend_server.exe"
+    to: "backend_server.exe"
+publish:
+  provider: github
+  owner: aleksandarpashomov-bit
+  repo: CopilotDeskAI
+win:
+  target: nsis
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
