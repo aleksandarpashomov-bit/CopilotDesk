@@ -1,11 +1,10 @@
 {
-  "name": "copilotdesk",
+  "name": "CopilotDeskAI",
   "version": "1.0.0",
-  "description": "CopilotDeskAI Desktop Assistant",
-  "main": "main.js",
+  "description": "Hybrid Visual AI Desktop Assistant",
+  "main": "app/main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "electron .",
     "build": "electron-builder",
     "dist": "electron-builder"
   },
@@ -18,15 +17,11 @@
     "win": {
       "target": "nsis",
       "icon": "icon.ico"
-    },
-    "electronDownload": {
-      "mirror": "https://npmmirror.com/mirrors/electron/"
     }
   },
   "dependencies": {
-    "electron-store": "^8.1.0",
-    "openai": "^4.50.0",
-    "screenshot-desktop": "^1.15.0"
+    "axios": "^1.6.7",
+    "dotenv": "^16.4.1"
   },
   "devDependencies": {
     "electron": "^28.0.0",
