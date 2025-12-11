@@ -1,13 +1,13 @@
 {
   "name": "copilotdesk",
   "version": "1.0.0",
-  "description": "CopilotDeskAI Desktop Assistant",
+  "description": "CopilotDeskAI Desktop Assistant with Screen Control",
   "main": "main.js",
 
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "build": "electron-builder"
   },
 
   "build": {
@@ -16,6 +16,10 @@
     "directories": {
       "output": "dist"
     },
+    "files": [
+      "**/*",
+      "backend/**/*"
+    ],
     "win": {
       "target": "nsis",
       "icon": "icon.ico"
@@ -23,7 +27,9 @@
   },
 
   "dependencies": {
-    "electron-store": "^8.1.0"
+    "electron-store": "^8.1.0",
+    "screenshot-desktop": "^1.15.0",
+    "robotjs": "0.6.0"
   },
 
   "devDependencies": {
