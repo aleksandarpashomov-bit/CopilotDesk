@@ -1,13 +1,15 @@
-async function analyzeScreen() {
-    // 1. Capture screenshot
-    const base64img = await window.electronAPI.captureScreen();
+const screenshotBtn = document.getElementById("screenshotBtn");
+const askInput = document.getElementById("askInput");
+const output = document.getElementById("output");
 
-    // 2. Send to GPT-4o Vision
-    const result = await window.electronAPI.analyzeImage(base64img);
+screenshotBtn.addEventListener("click", async () => {
+    output.innerText = "Capturing screen...";
 
-    // 3. Show pointer on screen
-    window.electronAPI.showPointer(result.x, result.y);
+    const image = await window.api.captureScreen();
 
-    // 4. Quiet mode → only short response
-    alert("Готово.");
-}
+    output.innerText = "Analyzing screenshot with GPT-4o...";
+
+    const response = await window.api.analyzeImage(image, askInput.value);
+
+    output.innerText = response;
+});
